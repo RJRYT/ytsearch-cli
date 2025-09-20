@@ -31,10 +31,14 @@
     "channel",
     "beautiful-cli"
   ],
-  "author": "RJRYT <rjryt@outlook.com> (https://rjryt.github.io/)",
+  "author": "RJRYT <robinjratr@gmail.com> (https://rjryt.github.io/)",
   "license": "MIT",
   "engines": {
     "node": ">=14.0.0"
+  },
+  "funding": {
+    "type": "patreon",
+    "url": "https://www.patreon.com/rjryt"
   },
   "repository": {
     "type": "git",
