@@ -1,0 +1,34 @@
+{
+  "name": "ytsearch-cli",
+  "version": "1.0.0",
+  "description": "A beautiful command-line interface for YouTube search using ytsearch.js - search videos, channels, playlists with rich terminal formatting",
+  "keywords": [
+    "youtube",
+    "search",
+    "cli",
+    "terminal",
+    "command-line",
+    "ytsearch",
+    "video",
+    "playlist",
+    "channel",
+    "beautiful-cli"
+  ],
+  "author": "RJRYT <rjryt@outlook.com> (https://rjryt.github.io/)",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RJRYT/ytsearch-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/RJRYT/ytsearch-cli/issues"
+  },
+  "homepage": "https://github.com/RJRYT/ytsearch-cli#readme",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
