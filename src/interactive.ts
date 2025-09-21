@@ -32,8 +32,12 @@ export class InteractiveCLI {
           break;
         }
 
-        await this.handleAction(action);
+        const _nextAction = await this.handleAction(action);
 
+        if (_nextAction === "mainmenu") {
+          console.log(Formatter.createBrand());
+          continue;
+        }
         const { continueSearch } = await inquirer.prompt([
           {
             type: "confirm",
@@ -86,7 +90,8 @@ export class InteractiveCLI {
     return action;
   }
 
-  private async handleAction(action: string): Promise<void> {
+  private async handleAction(action: string): Promise<string> {
+    let _nextAction = "restart-or-exit";
     switch (action) {
       case "video":
       case "channel":
@@ -103,9 +108,11 @@ export class InteractiveCLI {
         await this.handlePlaylistVideos();
         break;
       case "settings":
+        _nextAction = "mainmenu";
         await this.handleSettings();
         break;
     }
+    return _nextAction;
   }
 
   private async handleSearch(

@@ -17,6 +17,7 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "start": "node dist/cli.js",
+    "start:watch": "node dist/cli.js -w",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
