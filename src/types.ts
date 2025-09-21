@@ -1,15 +1,19 @@
+export type DisplayMode = "default" | "compact" | "online" | "detailed";
+
 export interface GlobalOptions {
   limit?: number;
-  sort?: 'relevance' | 'upload_date' | 'view_count' | 'rating';
+  sort?: "relevance" | "upload_date" | "view_count" | "rating";
   json?: boolean;
+  mode?: DisplayMode;
+  watch?: boolean;
 }
 
 export interface SearchCommandOptions extends GlobalOptions {
-  type?: 'video' | 'channel' | 'playlist';
+  type?: "video" | "channel" | "playlist";
 }
 
 export interface VideoResult {
-  type: 'video';
+  type: "video";
   id: string;
   title: string;
   image: string;
@@ -28,7 +32,7 @@ export interface VideoResult {
 }
 
 export interface ChannelResult {
-  type: 'channel';
+  type: "channel";
   id: string;
   title: string;
   image: string;
@@ -41,7 +45,7 @@ export interface ChannelResult {
 }
 
 export interface PlaylistResult {
-  type: 'playlist';
+  type: "playlist";
   contentType: string;
   id: string;
   title: string;
