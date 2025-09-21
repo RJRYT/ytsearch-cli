@@ -1,103 +1,117 @@
-# Overview
+# YTSearch CLI
 
-This is a comprehensive command-line interface (CLI) application for searching YouTube content. Built with TypeScript and Node.js, it provides a beautiful terminal interface for searching videos, channels, and playlists using the `ytsearch.js` library. The CLI features rich formatting, interactive prompts, multiple display modes, and both command-line and interactive watch modes for enhanced user experience.
+A simple command-line tool for searching YouTube, powered by the [`ytsearch.js`](https://www.npmjs.com/package/ytsearch.js) library. It lets you search for videos, channels, and playlists directly from your terminal with clean formatting and multiple display modes.
 
-## Recent Updates (Latest)
+---
 
-- **Multiple Display Modes**: Added support for 4 display modes:
-  - `default` - Full tables with comprehensive information
-  - `compact` - Quick table overview with essential data
-  - `online` - Web-friendly format with clickable URLs
-  - `detailed` - Extended metadata with all available information
+## 🚀 Installation
 
-- **Interactive Watch Mode**: Implemented `--watch` mode with:
-  - Arrow key navigation through command menus
-  - Continuous operation without restarting the CLI
-  - Query input and result mode selection
-  - Settings configuration for default preferences
-  - Built-in help and user guidance
+```bash
+npm install -g ytsearch-cli
+```
 
-- **Enhanced Global Options**: Added `--mode` flag for display mode selection and `--watch` for interactive mode
+Run help:
 
-## User Preferences
+```bash
+ytsearch --help
+```
 
-Preferred communication style: Simple, everyday language.
+---
 
-## System Architecture
+## 📖 Usage
 
-### CLI Framework
+### Video Search
 
-The application uses **Commander.js** as the primary CLI framework to handle command parsing and option management. This provides a clean, structured approach to building command-line interfaces with support for subcommands, global options, and help generation.
+```bash
+ytsearch video "never gonna give you up"
+```
 
-### Core Commands Structure
+### Channel Search
 
-The CLI is organized around three main command types:
+```bash
+ytsearch channel "RickAstleyVEVO"
+```
 
-- **Video search** - Search for YouTube videos with metadata like views, duration, and author
-- **Channel search** - Find YouTube channels with subscriber counts and verification status
-- **Playlist search** - Discover playlists with video counts and author information
+### Playlist Search
 
-Additional utility commands include:
+```bash
+ytsearch playlist "Top Hits 2025"
+```
 
-- **Details command** - Fetch detailed information about specific videos
-- **Playlist command** - Browse playlist contents and metadata
+### Video Details
 
-### Terminal User Interface
+```bash
+ytsearch details <videoId>
+```
 
-The application heavily emphasizes visual presentation using several UI libraries:
+### Playlist Videos
 
-- **Figlet** for ASCII art headers and branding
-- **Chalk** for colored terminal output with semantic color coding
-- **Boxen** for creating bordered content boxes
-- **CLI-table3** for structured data display in table format
-- **Ora** for loading spinners during API calls
-- **Inquirer** for interactive prompts and user input
+```bash
+ytsearch playlist-videos <playlistId>
+```
 
-### Output Formatting
+### Search All Types
 
-The system supports dual output modes:
+```bash
+ytsearch search "lofi hip hop"
+```
 
-- **Formatted display** - Rich terminal formatting with tables, colors, and icons for human readability
-- **JSON output** - Raw JSON data for programmatic consumption and scripting
+---
 
-### TypeScript Architecture
+## ⚙️ Options
 
-The codebase is fully typed with TypeScript, using:
+* `-l, --limit <n>` → Number of results (default: `10`)
+* `-s, --sort <type>` → `relevance`, `upload_date`, `view_count`, `rating`
+* `-m, --mode <type>` → `default`, `compact`, `online`, `detailed`
+* `-j, --json` → Output raw JSON
+* `-w, --watch` → Interactive mode
 
-- **Strict mode** enabled for enhanced type safety
-- **CommonJS modules** for Node.js compatibility
-- **Interface definitions** for search results, options, and command parameters
-- **Declaration files** generated for potential library usage
+Example:
 
-### Build and Distribution
+```bash
+ytsearch video "javascript tutorial" -l 5 -m compact
+```
 
-The project uses a standard TypeScript build pipeline:
+---
 
-- **Source code** in `src/` directory
-- **Compiled output** in `dist/` directory
-- **Binary executable** configured for npm global installation
-- **Development mode** with watch compilation for rapid iteration
+## 🎛 Display Modes
 
-## External Dependencies
+* **default** → Rich tables with info
+* **compact** → Minimal quick view
+* **online** → Clickable links
+* **detailed** → Full metadata
 
-### Core YouTube Integration
+---
 
-- **ytsearch.js** - Primary library for YouTube search functionality and data retrieval
+## 👨‍💻 Interactive Mode
 
-### CLI Development Stack
+Run:
 
-- **commander** - Command-line interface framework for argument parsing
-- **inquirer** - Interactive command-line prompts and user input
-- **open** - Cross-platform utility for opening URLs in default browser
+```bash
+ytsearch --watch
+```
 
-### Terminal Enhancement Libraries
+Features:
 
-- **chalk** - Terminal string styling with colors and formatting
-- **boxen** - Terminal box creation for headers and content sections
-- **cli-table3** - ASCII table generation for structured data display
-- **figlet** - ASCII art text generation for branding
-- **ora** - Elegant terminal spinners for loading states
+* Arrow key navigation
+* Continuous search
+* Live settings update
 
-### Utility Services
+---
 
-- **update-notifier** - Automatic update checking and user notifications for new versions
+## 📦 Tech Used
+
+* [ytsearch.js](https://www.npmjs.com/package/ytsearch.js) – Core YouTube search engine
+* [commander](https://www.npmjs.com/package/commander) – CLI framework
+* [inquirer](https://www.npmjs.com/package/inquirer) – Interactive prompts
+* [chalk](https://www.npmjs.com/package/chalk) – Colors and styling
+* [figlet](https://www.npmjs.com/package/figlet) – ASCII art banner
+* [cli-table3](https://www.npmjs.com/package/cli-table3) – Pretty terminal tables
+* [ora](https://www.npmjs.com/package/ora) – Loading spinners
+* [update-notifier](https://www.npmjs.com/package/update-notifier) – Update notifications
+
+---
+
+## 📝 License
+
+MIT License © 2025
