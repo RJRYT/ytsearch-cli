@@ -1,6 +1,23 @@
 # Overview
 
-This is a command-line interface (CLI) application for searching YouTube content. Built with TypeScript and Node.js, it provides a beautiful terminal interface for searching videos, channels, and playlists using the `ytsearch.js` library. The CLI features rich formatting, interactive prompts, and multiple output formats including JSON and formatted tables.
+This is a comprehensive command-line interface (CLI) application for searching YouTube content. Built with TypeScript and Node.js, it provides a beautiful terminal interface for searching videos, channels, and playlists using the `ytsearch.js` library. The CLI features rich formatting, interactive prompts, multiple display modes, and both command-line and interactive watch modes for enhanced user experience.
+
+## Recent Updates (Latest)
+
+- **Multiple Display Modes**: Added support for 4 display modes:
+  - `default` - Full tables with comprehensive information
+  - `compact` - Quick table overview with essential data
+  - `online` - Web-friendly format with clickable URLs
+  - `detailed` - Extended metadata with all available information
+
+- **Interactive Watch Mode**: Implemented `--watch` mode with:
+  - Arrow key navigation through command menus
+  - Continuous operation without restarting the CLI
+  - Query input and result mode selection
+  - Settings configuration for default preferences
+  - Built-in help and user guidance
+
+- **Enhanced Global Options**: Added `--mode` flag for display mode selection and `--watch` for interactive mode
 
 ## User Preferences
 

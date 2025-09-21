@@ -133,13 +133,18 @@ export class InteractiveCLI {
         default: this.defaultOptions.mode,
       },
       {
-        type: "number",
+        type: "input",
         name: "limit",
         message: "Number of results (1-50):",
-        default: this.defaultOptions.limit,
-        validate: (input: number) =>
-          (input >= 1 && input <= 50) ||
-          "Please enter a number between 1 and 50",
+        default: this.defaultOptions.limit?.toString(),
+        validate: (input: string) => {
+          const num = parseInt(input);
+          return (
+            (!isNaN(num) && num >= 1 && num <= 50) ||
+            "Please enter a number between 1 and 50"
+          );
+        },
+        filter: (input: string) => parseInt(input),
       },
       {
         type: "list",
@@ -524,13 +529,18 @@ export class InteractiveCLI {
       case "limit":
         const { newLimit } = await inquirer.prompt([
           {
-            type: "number",
+            type: "input",
             name: "newLimit",
             message: "Default number of results (1-50):",
-            default: this.defaultOptions.limit,
-            validate: (input: number) =>
-              (input >= 1 && input <= 50) ||
-              "Please enter a number between 1 and 50",
+            default: this.defaultOptions.limit?.toString(),
+            validate: (input: string) => {
+              const num = parseInt(input);
+              return (
+                (!isNaN(num) && num >= 1 && num <= 50) ||
+                "Please enter a number between 1 and 50"
+              );
+            },
+            filter: (input: string) => parseInt(input),
           },
         ]);
         this.defaultOptions.limit = newLimit;
