@@ -6,8 +6,8 @@ import {
   ChannelResult,
   PlaylistResult,
   SearchResult,
-  DisplayMode,
-} from "../types";
+} from "ytsearch.js";
+import { DisplayMode } from "../types";
 
 export class Formatter {
   static createHeader(title: string): string {
@@ -58,7 +58,7 @@ export class Formatter {
       [chalk.bold.yellow("Duration"), chalk.green(video.duration)],
       [chalk.bold.yellow("Views"), chalk.magenta(video.shortViewCount)],
       [chalk.bold.yellow("Published"), chalk.gray(video.publishedAt)],
-      [chalk.bold.yellow("Watch URL"), chalk.underline.blue(video.watchUrl)]
+      [chalk.bold.yellow("Watch URL"), chalk.underline.blue(video.url)]
     );
 
     return table.toString();
@@ -156,10 +156,17 @@ export class Formatter {
   }
 
   static formatResults(
-    results: SearchResult[],
+    results: SearchResult,
     mode: DisplayMode = "default"
   ): string {
-    if (results.length === 0) {
+    const _resultLength =
+      results.channels.length +
+      results.playlists.length +
+      results.videos.length +
+      results.movies.length +
+      results.lives.length;
+
+    if (_resultLength === 0) {
       return boxen(chalk.yellow("No results found"), {
         padding: 1,
         margin: 1,
@@ -174,8 +181,16 @@ export class Formatter {
       return this.formatOnlineResults(results);
     }
 
+    const _combinedResults: (VideoResult | ChannelResult | PlaylistResult)[] = [
+      ...results.videos,
+      ...results.channels,
+      ...results.playlists,
+      ...results.movies,
+      ...results.lives,
+    ];
+
     let output = "";
-    results.forEach((result, index) => {
+    _combinedResults.forEach((result, index) => {
       output += chalk.bold.cyan(`\n── Result ${index + 1} ──\n`);
 
       switch (result.type) {
@@ -233,7 +248,7 @@ export class Formatter {
   }
 
   // Compact mode formatter
-  static formatCompactResults(results: SearchResult[]): string {
+  static formatCompactResults(results: SearchResult): string {
     const table = new Table({
       head: [
         chalk.bold.white("Type"),
@@ -262,7 +277,15 @@ export class Formatter {
       wordWrap: true,
     });
 
-    results.forEach((result) => {
+    const _combinedResults: (VideoResult | ChannelResult | PlaylistResult)[] = [
+      ...results.videos,
+      ...results.channels,
+      ...results.playlists,
+      ...results.movies,
+      ...results.lives,
+    ];
+
+    _combinedResults.forEach((result) => {
       const title =
         result.title.length > 35
           ? result.title.substring(0, 35) + "..."
@@ -315,10 +338,18 @@ export class Formatter {
   }
 
   // Online mode formatter
-  static formatOnlineResults(results: SearchResult[]): string {
+  static formatOnlineResults(results: SearchResult): string {
     let output = "\n";
 
-    results.forEach((result, index) => {
+    const _combinedResults: (VideoResult | ChannelResult | PlaylistResult)[] = [
+      ...results.videos,
+      ...results.channels,
+      ...results.playlists,
+      ...results.movies,
+      ...results.lives,
+    ];
+
+    _combinedResults.forEach((result, index) => {
       output += chalk.bold.cyan(`${index + 1}. `);
 
       switch (result.type) {
@@ -335,7 +366,7 @@ export class Formatter {
             "\n";
           output +=
             chalk.gray("   📺 ") +
-            chalk.underline.blue(result.watchUrl) +
+            chalk.underline.blue(result.url) +
             "\n\n";
           break;
         case "channel":
@@ -451,7 +482,7 @@ export class Formatter {
         chalk.bold.yellow("Resolution"),
         chalk.green(`${video.thumbnail.width}x${video.thumbnail.height}`),
       ],
-      [chalk.bold.yellow("Watch URL"), chalk.underline.blue(video.watchUrl)]
+      [chalk.bold.yellow("Watch URL"), chalk.underline.blue(video.url)]
     );
 
     return table.toString();

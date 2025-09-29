@@ -47,7 +47,7 @@ export async function detailsCommand(videoId: string, options: GlobalOptions = {
       [chalk.bold.yellow('Upload Date'), chalk.gray(details.uploadDate)],
       [chalk.bold.yellow('Category'), chalk.cyan(details.category || 'N/A')],
       [chalk.bold.yellow('Ratings Allowed'), details.allowRatings ? chalk.green('Yes') : chalk.red('No')],
-      [chalk.bold.yellow('Watch URL'), chalk.underline.blue(details.watchUrl)]
+      [chalk.bold.yellow('Watch URL'), chalk.underline.blue(details.url)]
     );
 
     if (details.description && details.description.length > 0) {

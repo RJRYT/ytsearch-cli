@@ -10,7 +10,9 @@ export async function playlistCommand(playlistId: string, options: GlobalOptions
   const spinner = ora('Fetching playlist...').start();
   
   try {
-    const playlistPage = await getPlaylistItems(playlistId);
+    const playlistPage = await getPlaylistItems(playlistId, {
+      limit: parseInt(options.limit?.toString() || "50")
+    });
     spinner.stop();
 
     if (options.json) {
@@ -33,14 +35,14 @@ export async function playlistCommand(playlistId: string, options: GlobalOptions
       wordWrap: true
     });
 
-    const verifiedIcon = playlistPage.playlist.author.verified ? chalk.blue('✓') : '';
-    const artistIcon = playlistPage.playlist.author.isArtist ? chalk.red('♪') : '';
+    const verifiedIcon = playlistPage.playlist?.author?.verified ? chalk.blue('✓') : '';
+    const artistIcon = playlistPage.playlist?.author?.isArtist ? chalk.red('♪') : '';
 
     infoTable.push(
-      [chalk.bold.yellow('Author'), `${chalk.cyan(playlistPage.playlist.author.name)} ${verifiedIcon} ${artistIcon}`],
+      [chalk.bold.yellow('Author'), `${chalk.cyan(playlistPage.playlist?.author?.name)} ${verifiedIcon} ${artistIcon}`],
       [chalk.bold.yellow('Total Videos'), chalk.green(playlistPage.playlist.videoCount)],
       [chalk.bold.yellow('Total Views'), chalk.magenta(playlistPage.playlist.viewsCount || 'N/A')],
-      [chalk.bold.yellow('Expected Pages'), chalk.blue(playlistPage.playlist.expectedPages?.toString() || 'Unknown')]
+      [chalk.bold.yellow('Expected Pages'), chalk.blue(playlistPage.metadata.expectedPages?.toString() || 'Unknown')]
     );
 
     if (playlistPage.playlist.description) {
@@ -89,7 +91,7 @@ export async function playlistCommand(playlistId: string, options: GlobalOptions
       console.log(videosTable.toString());
 
       // Check if there's a next page
-      if (!currentPage.hasNextPage) {
+      if (!currentPage.metadata.hasNextPage) {
         console.log(Formatter.formatSuccess(`Displayed all ${currentPage.videos.length} videos from the playlist`));
         break;
       }

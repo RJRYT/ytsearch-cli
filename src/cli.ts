@@ -64,6 +64,22 @@ program
     await searchCommand(query, "playlist", program.opts());
   });
 
+// Movie search command
+program
+  .command("movie <query>")
+  .description("search for YouTube movies")
+  .action(async (query: string) => {
+    await searchCommand(query, "movie", program.opts());
+  });
+
+// Live search command
+program
+  .command("live <query>")
+  .description("search for YouTube livestreams")
+  .action(async (query: string) => {
+    await searchCommand(query, "live", program.opts());
+  });
+
 // Video details command
 program
   .command("details <videoId>")
@@ -85,7 +101,7 @@ program
   .command("search <query>")
   .description("search across all YouTube content types")
   .action(async (query: string) => {
-    await searchCommand(query, undefined, program.opts());
+    await searchCommand(query, "any", program.opts());
   });
 
 // Interactive mode

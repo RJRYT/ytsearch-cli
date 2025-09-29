@@ -1,11 +1,12 @@
 import ora from "ora";
-import { searchYouTube } from "ytsearch.js";
+import { searchYouTube, SearchType, SearchResult } from "ytsearch.js";
 import { Formatter } from "../utils/formatter";
 import { GlobalOptions } from "../types";
+import inquirer from "inquirer";
 
 export async function searchCommand(
   query: string,
-  type?: "video" | "channel" | "playlist",
+  type?: SearchType,
   options: GlobalOptions = {}
 ): Promise<void> {
   const spinner = ora("Searching YouTube...").start();
@@ -17,11 +18,6 @@ export async function searchCommand(
       sort: options.sort || "relevance",
     };
 
-    // Remove undefined type to search all types
-    if (!type) {
-      delete searchOptions.type;
-    }
-
     const results = await searchYouTube(query, searchOptions);
     spinner.stop();
 
@@ -32,33 +28,79 @@ export async function searchCommand(
 
     console.log(Formatter.createHeader(`Search Results for "${query}"`));
 
-    if (type) {
-      console.log(
-        Formatter.formatSuccess(`Found ${results.length} ${type}(s)`)
-      );
-    } else {
-      console.log(Formatter.formatSuccess(`Found ${results.length} result(s)`));
-    }
+    let currentPage: SearchResult | null = results;
+    let pageNumber = 1;
 
-    console.log(Formatter.formatResults(results, options.mode));
+    while (true) {
+      if (!currentPage) {
+        console.log(Formatter.formatWarning("No results found."));
+        break;
+      }
 
-    if (results.length === 0) {
-      console.log(
-        Formatter.formatWarning("Try different keywords or check your spelling")
-      );
+      const totalResults =
+        currentPage.channels.length +
+        currentPage.playlists.length +
+        currentPage.videos.length +
+        currentPage.movies.length +
+        currentPage.lives.length;
+
+      if(totalResults === 0) {
+        console.log(Formatter.formatWarning("No results found."));
+        break;
+      }
+
+      console.log(Formatter.createHeader(`Page ${pageNumber}`));
+
+      if (type && type !== "any") {
+        console.log(
+          Formatter.formatSuccess(`Found ${totalResults} ${type}(s)`)
+        );
+      } else {
+        console.log(Formatter.formatSuccess(`Found ${totalResults} result(s)`));
+      }
+
+      console.log(Formatter.formatResults(currentPage, options.mode));
+
+      // Check if there's a next page
+      if (!currentPage.metadata.hasNextPage) {
+        console.log(
+          Formatter.formatSuccess(
+            `Displayed all ${currentPage.videos.length} result from the youtube search`
+          )
+        );
+        break;
+      }
+
+      // Ask user if they want to see the next page
+      const { loadMore } = await inquirer.prompt([
+        {
+          type: "confirm",
+          name: "loadMore",
+          message: "Load next page?",
+          default: false,
+        },
+      ]);
+
+      if (!loadMore) {
+        break;
+      }
+
+      const nextSpinner = ora('Loading next page...').start();
+      try {
+        currentPage = await currentPage.nextPage();
+        nextSpinner.stop();
+        pageNumber++;
+      } catch (error) {
+        nextSpinner.stop();
+        console.log(Formatter.formatError("Failed to load next page"));
+        break;
+      }
     }
   } catch (error: any) {
     spinner.stop();
 
     if (error.name === "YtSearchError") {
       console.log(Formatter.formatError(`${error.code}: ${error.message}`));
-      if (error.metadata) {
-        console.log(
-          Formatter.formatWarning(
-            `Additional info: ${JSON.stringify(error.metadata)}`
-          )
-        );
-      }
     } else {
       console.log(Formatter.formatError(`Unexpected error: ${error.message}`));
     }

@@ -1,8 +1,15 @@
 import inquirer from "inquirer";
 import ora from "ora";
-import { searchYouTube, getVideoDetails, getPlaylistItems } from "ytsearch.js";
+import {
+  searchYouTube,
+  getVideoDetails,
+  getPlaylistItems,
+  SearchType,
+  VideoResult,
+  SearchResult,
+} from "ytsearch.js";
 import { Formatter } from "./utils/formatter";
-import { DisplayMode, GlobalOptions } from "./types";
+import { GlobalOptions } from "./types";
 import chalk from "chalk";
 import Table from "cli-table3";
 
@@ -76,9 +83,11 @@ export class InteractiveCLI {
           { name: "🎥 Search Videos", value: "video" },
           { name: "📺 Search Channels", value: "channel" },
           { name: "📋 Search Playlists", value: "playlist" },
+          { name: "🎬 Search Movies", value: "movie" },
+          { name: "🔴 Search Live Streams", value: "live" },
           { name: "🔍 Get Video Details", value: "details" },
           { name: "📚 Browse Playlist Videos", value: "playlist-videos" },
-          { name: "🌐 Search All Types", value: "search-all" },
+          { name: "🌐 Search All Types", value: "any" },
           new inquirer.Separator(),
           { name: "⚙️  Configure Settings", value: "settings" },
           { name: "❌ Exit", value: "exit" },
@@ -96,10 +105,10 @@ export class InteractiveCLI {
       case "video":
       case "channel":
       case "playlist":
-      case "search-all":
-        await this.handleSearch(
-          action === "search-all" ? undefined : (action as any)
-        );
+      case "movie":
+      case "live":
+      case "any":
+        await this.handleSearch(action);
         break;
       case "details":
         await this.handleVideoDetails();
@@ -115,9 +124,7 @@ export class InteractiveCLI {
     return _nextAction;
   }
 
-  private async handleSearch(
-    type?: "video" | "channel" | "playlist"
-  ): Promise<void> {
+  private async handleSearch(type?: SearchType): Promise<void> {
     const questions = [
       {
         type: "input",
@@ -142,13 +149,13 @@ export class InteractiveCLI {
       {
         type: "input",
         name: "limit",
-        message: "Number of results (1-50):",
+        message: "Number of results (10-50):",
         default: this.defaultOptions.limit?.toString(),
         validate: (input: string) => {
           const num = parseInt(input);
           return (
-            (!isNaN(num) && num >= 1 && num <= 50) ||
-            "Please enter a number between 1 and 50"
+            (!isNaN(num) && num >= 10 && num <= 50) ||
+            "Please enter a number between 10 and 50"
           );
         },
         filter: (input: string) => parseInt(input),
@@ -178,11 +185,6 @@ export class InteractiveCLI {
         sort: answers.sort,
       };
 
-      // Remove undefined type to search all types
-      if (!type) {
-        delete searchOptions.type;
-      }
-
       const results = await searchYouTube(answers.query, searchOptions);
       spinner.stop();
 
@@ -190,41 +192,88 @@ export class InteractiveCLI {
         Formatter.createHeader(`Search Results for "${answers.query}"`)
       );
 
-      if (type) {
-        console.log(
-          Formatter.formatSuccess(`Found ${results.length} ${type}(s)`)
-        );
-      } else {
-        console.log(
-          Formatter.formatSuccess(`Found ${results.length} result(s)`)
-        );
-      }
+      let currentPage: SearchResult | null = results;
+      let pageNumber = 1;
 
-      if (answers.mode === "json") {
-        console.log(JSON.stringify(results, null, 2));
-      } else {
-        console.log(Formatter.formatResults(results, answers.mode));
-      }
+      while (true) {
+        if (!currentPage) {
+          console.log(Formatter.formatWarning("No results found."));
+          break;
+        }
 
-      if (results.length === 0) {
-        console.log(
-          Formatter.formatWarning(
-            "Try different keywords or check your spelling"
-          )
-        );
+        const _resultLength =
+          results.channels.length +
+          results.playlists.length +
+          results.videos.length +
+          results.movies.length +
+          results.lives.length;
+
+        if (_resultLength === 0) {
+          console.log(Formatter.formatWarning("No results found."));
+          break;
+        }
+
+        console.log(Formatter.createHeader(`Page ${pageNumber}`));
+
+        if (type && type !== "any") {
+          console.log(
+            Formatter.formatSuccess(`Found ${_resultLength} ${type}(s)`)
+          );
+        } else {
+          console.log(
+            Formatter.formatSuccess(`Found ${_resultLength} result(s)`)
+          );
+        }
+
+        if (answers.mode === "json") {
+          console.log(JSON.stringify(currentPage, null, 2));
+        } else {
+          console.log(Formatter.formatResults(currentPage, answers.mode));
+        }
+
+        // Check if there's a next page
+        if (!currentPage.metadata.hasNextPage) {
+          console.log(
+            Formatter.formatSuccess(
+              `Displayed all ${currentPage.videos.length} result from the youtube search`
+            )
+          );
+          break;
+        }
+
+        // Ask user what to do next
+        const { action } = await inquirer.prompt([
+          {
+            type: "list",
+            name: "action",
+            message: "What would you like to do?",
+            choices: [
+              { name: "➡️  Load next page", value: "next" },
+              { name: "🏠 Return to main menu", value: "return" },
+            ],
+          },
+        ]);
+
+        if (action === "return") {
+          break;
+        }
+
+        const nextSpinner = ora("Loading next page...").start();
+        try {
+          currentPage = (await currentPage.nextPage()) as any;
+          nextSpinner.stop();
+          pageNumber++;
+        } catch (error) {
+          nextSpinner.stop();
+          console.log(Formatter.formatError("Failed to load next page"));
+          break;
+        }
       }
     } catch (error: any) {
       spinner.stop();
 
       if (error.name === "YtSearchError") {
         console.log(Formatter.formatError(`${error.code}: ${error.message}`));
-        if (error.metadata) {
-          console.log(
-            Formatter.formatWarning(
-              `Additional info: ${JSON.stringify(error.metadata)}`
-            )
-          );
-        }
       } else {
         console.log(
           Formatter.formatError(`Unexpected error: ${error.message}`)
@@ -287,7 +336,7 @@ export class InteractiveCLI {
         console.log(JSON.stringify(details, null, 2));
       } else {
         // Convert to our VideoResult format and display
-        const videoResult = {
+        const videoResult: VideoResult = {
           type: "video" as const,
           id: details.id,
           title: details.title,
@@ -302,8 +351,9 @@ export class InteractiveCLI {
             url: details.channel.url,
             verified: details.channel.verified,
           },
-          watchUrl: details.watchUrl,
+          url: details.url,
           publishedAt: details.uploadDate,
+          isLive: details.isLive,
         };
 
         if (mode === "detailed") {
@@ -372,10 +422,27 @@ export class InteractiveCLI {
       },
     ]);
 
+    const { limit } = await inquirer.prompt([
+      {
+        type: "input",
+        name: "limit",
+        message: "Number of results (10-100):",
+        default: this.defaultOptions.limit?.toString(),
+        validate: (input: string) => {
+          const num = parseInt(input);
+          return (
+            (!isNaN(num) && num >= 10 && num <= 100) ||
+            "Please enter a number between 10 and 100"
+          );
+        },
+        filter: (input: string) => parseInt(input),
+      },
+    ]);
+
     const spinner = ora("Fetching playlist...").start();
 
     try {
-      const playlistPage = await getPlaylistItems(playlistId);
+      const playlistPage = await getPlaylistItems(playlistId, { limit });
       spinner.stop();
 
       if (mode === "json") {
@@ -439,7 +506,7 @@ export class InteractiveCLI {
         console.log(videosTable.toString());
 
         // Check if there's a next page
-        if (!currentPage.hasNextPage) {
+        if (!currentPage.metadata.hasNextPage) {
           console.log(
             Formatter.formatSuccess(`Displayed all videos from the playlist`)
           );
