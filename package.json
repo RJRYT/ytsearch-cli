@@ -1,7 +1,7 @@
 {
   "name": "ytsearch-cli",
-  "version": "1.2.1",
-  "description": "A beautiful command-line interface for YouTube search using ytsearch.js - search videos, channels, playlists with rich terminal formatting",
+  "version": "1.2.2",
+  "description": "YouTube search CLI for Node.js — search videos, channels, playlists, video details, and playlist videos from the terminal.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
@@ -22,15 +22,23 @@
   },
   "keywords": [
     "youtube",
-    "search",
-    "cli",
     "terminal",
     "command-line",
+    "youtube-cli",
+    "youtube-search-cli",
+    "youtube-search",
+    "youtube-terminal",
+    "youtube-command-line",
+    "youtube-video-search",
+    "youtube-channel-search",
+    "youtube-playlist-search",
+    "nodejs-cli",
+    "node-cli",
+    "terminal-cli",
+    "command-line-tool",
     "ytsearch",
-    "video",
-    "playlist",
-    "channel",
-    "beautiful-cli"
+    "ytsearch-cli",
+    "ytsearch.js"
   ],
   "author": "RJRYT <robinjratr@gmail.com> (https://rjryt.github.io/)",
   "license": "MIT",
@@ -64,7 +72,7 @@
     "open": "^9.1.0",
     "ora": "^7.0.1",
     "update-notifier": "^7.3.1",
-    "ytsearch.js": "^2.1.1"
+    "ytsearch.js": "^2.1.2"
   },
   "devDependencies": {
     "@types/figlet": "^1.7.0",

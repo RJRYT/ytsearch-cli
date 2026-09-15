@@ -1,10 +1,12 @@
-# YTSearch CLI
+# YTSearch CLI — YouTube Search from the Terminal
 
-A simple command-line tool for searching YouTube, powered by the [`ytsearch.js`](https://www.npmjs.com/package/ytsearch.js) library. It lets you search for videos, channels, and playlists directly from your terminal with clean formatting and multiple display modes.
+**YTSearch CLI** is a Node.js command-line tool for searching YouTube directly from your terminal. Search YouTube videos, channels, playlists, video details, and playlist videos with formatted output, JSON support, and an interactive mode.
 
----
+Built with [ytsearch.js](https://www.npmjs.com/package/ytsearch.js).
 
-## 🚀 Installation
+## Install YTSearch CLI
+
+Install the YouTube search CLI globally with npm:
 
 ```bash
 npm install -g ytsearch-cli
@@ -18,33 +20,44 @@ ytsearch --help
 
 ---
 
-## 📖 Usage
+## Features
 
-### Video Search
+- Search YouTube videos, channels, and playlists from the command line
+- Retrieve YouTube video details and playlist videos by ID
+- Choose rich table, compact, detailed, or link-friendly output
+- Export search results as JSON for scripts and automation
+- Use interactive watch mode for repeated searches
+- Works with Node.js 14 and later
+
+---
+
+## YouTube Search CLI Usage
+
+### Search YouTube Videos
 
 ```bash
 ytsearch video "never gonna give you up"
 ```
 
-### Channel Search
+### Search YouTube Channels
 
 ```bash
 ytsearch channel "RickAstleyVEVO"
 ```
 
-### Playlist Search
+### Search YouTube Playlists
 
 ```bash
-ytsearch playlist "Top Hits 2025"
+ytsearch playlist "Top Hits 2026"
 ```
 
-### Video Details
+### Get YouTube Video Details
 
 ```bash
 ytsearch details <videoId>
 ```
 
-### Playlist Videos
+### Get Videos from a YouTube Playlist
 
 ```bash
 ytsearch playlist-videos <playlistId>
@@ -58,7 +71,7 @@ ytsearch search "lofi hip hop"
 
 ---
 
-## ⚙️ Options
+## CLI Options
 
 * `-l, --limit <n>` → Number of results (default: `10`)
 * `-s, --sort <type>` → `relevance`, `upload_date`, `view_count`, `rating`
@@ -74,7 +87,7 @@ ytsearch video "javascript tutorial" -l 5 -m compact
 
 ---
 
-## 🎛 Display Modes
+## Display Modes
 
 * **default** → Rich tables with info
 * **compact** → Minimal quick view
@@ -83,7 +96,7 @@ ytsearch video "javascript tutorial" -l 5 -m compact
 
 ---
 
-## 👨‍💻 Interactive Mode
+## Interactive YouTube Search Mode
 
 Run:
 
@@ -99,7 +112,7 @@ Features:
 
 ---
 
-## 📦 Tech Used
+## Tech Used
 
 * [ytsearch.js](https://www.npmjs.com/package/ytsearch.js) – Core YouTube search engine
 * [commander](https://www.npmjs.com/package/commander) – CLI framework
@@ -112,6 +125,6 @@ Features:
 
 ---
 
-## 📝 License
+## License
 
-MIT License © 2025
+MIT License © 2026
