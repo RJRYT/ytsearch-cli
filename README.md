@@ -1,8 +1,10 @@
 # YTSearch CLI — YouTube Search from the Terminal
 
-**YTSearch CLI** is a Node.js command-line tool for searching YouTube directly from your terminal. Search YouTube videos, channels, playlists, video details, and playlist videos with formatted output, JSON support, and an interactive mode.
+> A command-line interface for YouTube search powered by [ytsearch.js](https://www.npmjs.com/package/ytsearch.js).
 
-Built with [ytsearch.js](https://www.npmjs.com/package/ytsearch.js).
+YTSearch CLI ([`ytsearch-cli`](https://www.npmjs.com/package/ytsearch-cli)) is the official command-line interface for [ytsearch.js](https://www.npmjs.com/package/ytsearch.js), a TypeScript and Node.js library for searching YouTube videos, channels, playlists, and retrieving video and playlist data.
+
+Search YouTube directly from your terminal with formatted output, JSON support, detailed metadata, and an interactive search mode.
 
 ## Install YTSearch CLI
 
@@ -114,7 +116,7 @@ Features:
 
 ## Tech Used
 
-* [ytsearch.js](https://www.npmjs.com/package/ytsearch.js) – Core YouTube search engine
+* [ytsearch.js](https://www.npmjs.com/package/ytsearch.js) – Core YouTube search and data library
 * [commander](https://www.npmjs.com/package/commander) – CLI framework
 * [inquirer](https://www.npmjs.com/package/inquirer) – Interactive prompts
 * [chalk](https://www.npmjs.com/package/chalk) – Colors and styling
@@ -122,6 +124,12 @@ Features:
 * [cli-table3](https://www.npmjs.com/package/cli-table3) – Pretty terminal tables
 * [ora](https://www.npmjs.com/package/ora) – Loading spinners
 * [update-notifier](https://www.npmjs.com/package/update-notifier) – Update notifications
+
+---
+
+## Related
+
+**[ytsearch.js](https://www.npmjs.com/package/ytsearch.js)** is the core library powering YTSearch CLI. Use it directly in your Node.js or TypeScript projects when you need programmatic YouTube search and playlist data.
 
 ---
 
