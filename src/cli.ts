@@ -9,15 +9,22 @@ import { playlistCommand } from "./commands/playlist";
 import { InteractiveCLI } from "./interactive";
 
 const packageJson = require("../package.json");
+const jsonOutput = process.argv.some(
+  (argument) => argument === "--json" || argument === "-j"
+);
 
-// Check for updates
-updateNotifier({ pkg: packageJson }).notify();
+// Keep JSON output machine-readable: no update notification or branding.
+if (!jsonOutput) {
+  updateNotifier({ pkg: packageJson }).notify();
+}
 
 const program = new Command();
 
-// CLI Header
-console.log(figlet.textSync("YTSearch CLI", { horizontalLayout: "full" }));
-console.log(Formatter.createBrand());
+// CLI header is only intended for human-readable output.
+if (!jsonOutput) {
+  console.log(figlet.textSync("YTSearch CLI", { horizontalLayout: "full" }));
+  console.log(Formatter.createBrand());
+}
 
 program
   .name("ytsearch")
